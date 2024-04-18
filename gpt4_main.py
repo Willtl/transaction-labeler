@@ -62,7 +62,7 @@ def process_files(folder_path):
                     description_mapping = pd.concat([description_mapping, new_row], ignore_index=True)
 
                     # Save updated description_mapping.csv to disk
-                    description_mapping.to_csv('description_mapping.csv', index=False)
+                    description_mapping.to_csv('./static/output/labeled_expenses_gpt4.csv', index=False)
                     print('ADDED', description)
                 else:
                     print('SKIP', description)
