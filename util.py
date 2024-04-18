@@ -85,9 +85,9 @@ def load_description_mapping():
 
 
 # Load description_mapping.csv
-def load_description_mapping():
+def load_description_mapping(output_file):
     mapping = set()
-    mapping_file = 'description_mapping.csv'
+    mapping_file = output_file
     if os.path.exists(mapping_file):
         description_mapping = pd.read_csv(mapping_file)
         # Iterate over descriptions to update the mapping set

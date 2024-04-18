@@ -2,6 +2,9 @@ import ollama
 
 from util import *
 
+model_name = 'llamma2'  # [llama2, falcon]
+output_file = f'./static/output/labeled_expenses_{model_name}.csv'
+
 
 def categorize_description(description):
     category_descriptions = '\n'.join([f"{name}: {desc}" for name, desc in categories])
@@ -10,8 +13,9 @@ def categorize_description(description):
               f"If you are not at least 70% confident in your classification, please select 'Undefined'.\n\n"
               f"{category_descriptions}\n\nImportant: Provide only the label (one word) as output. Do not write anything except valid categories or Undefined.")
 
+    print(prompt)
     response = ollama.chat(
-        model='llama2',
+        model=model_name,
         messages=[
             {'role': 'system', 'content': "You are a concise assistant focused on accurately categorizing expense types."},
             {'role': 'user', 'content': prompt}
@@ -32,7 +36,7 @@ def categorize_description(description):
 
 
 def process_files(folder_path):
-    description_mapping, mapping = load_description_mapping()
+    description_mapping, mapping = load_description_mapping(output_file)
 
     for file_name in os.listdir(folder_path):
         if file_name.endswith('.csv'):
@@ -60,7 +64,7 @@ def process_files(folder_path):
                     description_mapping = pd.concat([description_mapping, new_row], ignore_index=True)
 
                     # Save updated description_mapping.csv to disk
-                    description_mapping.to_csv('./static/output/labeled_expenses_lamma2.csv', index=False)
+                    description_mapping.to_csv(output_file, index=False)
                     print('ADDED', description, label)
                 else:
                     print('SKIP', description)
