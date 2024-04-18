@@ -1,12 +1,12 @@
-# Financial Transaction Data Enhancement and Classification
+# Financial Transaction Labeler
 
-This project aims to enhance financial transaction data through web scraping and use a Large Language Model (LLM) for labeling and classification tasks.
+This project aims to enhance financial transaction data through web scraping and use LLMs for labeling and classification tasks. This data can be later used for fine-tuning models for classification, such as a smaller BERT.
 
 The `util.py` module contains functions for scraping additional information from transaction descriptions. This information is then used to provide more context for classification.
 
 There are two implementations for classification:
 
-- **Using Ollama**: This implementation utilizes the Ollama platform and the `ollama` package for interaction. The `categorize_description` function categorizes transactions using the Llama2 model.
+- **Using Ollama (Llamma 2 and Falcon)**: This implementation utilizes the `ollama` package and models like `Llamma 2` and `Falcon`. The `categorize_description` function categorizes transactions using the specified model.
 - **Using OpenAI GPT**: This implementation utilizes the OpenAI API and the `openai` package for interaction. The `categorize_description` function categorizes transactions using the GPT-4 model.
 
 ## Usage
