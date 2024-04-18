@@ -6,7 +6,7 @@ The `util.py` module contains functions for scraping additional information from
 
 There are two implementations for classification:
 
-- **Using Ollama (Llamma 2 and Falcon)**: This implementation utilizes the `ollama` package and models like `Llamma 2` and `Falcon`. The `categorize_description` function categorizes transactions using the specified model.
+- **Using Ollama (Llama 2 and Falcon)**: This implementation utilizes the `ollama` package and models like `Llama 2` and `Falcon`. The `categorize_description` function categorizes transactions using the specified model.
 - **Using OpenAI GPT**: This implementation utilizes the OpenAI API and the `openai` package for interaction. The `categorize_description` function categorizes transactions using the GPT-4 model.
 
 ## Usage
