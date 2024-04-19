@@ -2,7 +2,7 @@ import ollama
 
 from util import *
 
-model_name = 'llamma2'  # [llama2, falcon]
+model_name = 'llama3'  # [llama2, falcon]
 output_file = f'./static/output/labeled_expenses_{model_name}.csv'
 
 
@@ -10,10 +10,9 @@ def categorize_description(description):
     category_descriptions = '\n'.join([f"{name}: {desc}" for name, desc in categories])
     prompt = (f"Read the following credit card expense description carefully:\n\n'{description}'\n\n"
               f"Categorize this expense as one of the following, or Undefined if the description lacks sufficient detail. "
-              f"If you are not at least 70% confident in your classification, please select 'Undefined'.\n\n"
+              f"You use 'Undefined' sparingly.\n\n"
               f"{category_descriptions}\n\nImportant: Provide only the label (one word) as output. Do not write anything except valid categories or Undefined.")
 
-    print(prompt)
     response = ollama.chat(
         model=model_name,
         messages=[

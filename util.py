@@ -7,16 +7,18 @@ import requests
 from bs4 import BeautifulSoup
 
 categories = (
-    ("Dining", "Restaurants, cafes, food delivery."),
-    ("Supermarket", "Grocery stores, food markets."),
-    ("Healthcare", "Hospitals, clinics, pharmacies."),
-    ("Pets", "Pet stores, vet services, supplies."),
-    ("Reimbursement", "Refunds, returns, compensation."),
-    ("Shopping", "Clothing, fashion, electronics, home goods."),
-    ("Subscriptions", "Streaming, magazines, software."),
-    ("Transport", "Public transport, taxis, fuel."),
-    ("Travel", "Airlines, hotels, vacation, currencies in (eur, chf, usd, brl, etc)."),
-    ("Utilities", "Electricity, water, gas, telecom.")
+    ("Dining", "Expense related to dining out: restaurants, cafes, fast-food outlets, and food delivery services. This category encompasses meals consumed outside."),
+    ("Supermarket", "Expense from grocery stores, supermarkets, and food markets. This category covers purchases of food items, beverages, household supplies, and other essentials."),
+    ("Healthcare", "Expense associated with healthcare services, including hospitals, clinics, pharmacies, medical consultations, prescriptions, and medical supplies."),
+    ("Pets", "Expense related to pet care, such as purchases from pet stores, veterinary services, grooming, pet food, medications, and other pet-related Expense."),
+    ("Reimbursement", "Refunds, returns, or compensation received for previously incurred Expense."),
+    ("Shopping", "Expense from various retail purchases, including clothing, fashion accessories, electronics, gadgets, home goods, and personal care products."),
+    ("Subscriptions", "Expense for subscription-based services, such as streaming platforms, magazines, newspapers, online software, membership fees, and other "
+                      "regular payments such haircuts, etc."),
+    ("Transport", "Expense related to transportation, such as public transport fares, taxi rides, fuel purchases, vehicle maintenance, parking fees, and toll charges."),
+    ("Travel", "Expense incurred while traveling, including airline tickets, hotel accommodations, vacation packages, rental cars, travel insurance, and Expense in "
+               "foreign currencies."),
+    ("Utilities", "Expense for essential services such as electricity, water, gas, internet, cable television, phone bills, and other utilities required for daily living.")
 )
 
 valid_labels = {name.lower(): name for name, _ in categories}
