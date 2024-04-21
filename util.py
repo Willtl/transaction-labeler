@@ -2,23 +2,20 @@ import os
 import re
 from collections import Counter
 
+import ollama
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
 categories = (
-    ("Dining", "Expense related to dining out: restaurants, cafes, fast-food outlets, and food delivery services. This category encompasses meals consumed outside."),
-    ("Supermarket", "Expense from grocery stores, supermarkets, and food markets. This category covers purchases of food items, beverages, household supplies, and other essentials."),
-    ("Healthcare", "Expense associated with healthcare services, including hospitals, clinics, pharmacies, medical consultations, prescriptions, and medical supplies."),
-    ("Pets", "Expense related to pet care, such as purchases from pet stores, veterinary services, grooming, pet food, medications, and other pet-related Expense."),
-    ("Reimbursement", "Refunds, returns, or compensation received for previously incurred Expense."),
-    ("Shopping", "Expense from various retail purchases, including clothing, fashion accessories, electronics, gadgets, home goods, and personal care products."),
-    ("Subscriptions", "Expense for subscription-based services, such as streaming platforms, magazines, newspapers, online software, membership fees, and other "
-                      "regular payments such haircuts, etc."),
-    ("Transport", "Expense related to transportation, such as public transport fares, taxi rides, fuel purchases, vehicle maintenance, parking fees, and toll charges."),
-    ("Travel", "Expense incurred while traveling, including airline tickets, hotel accommodations, vacation packages, rental cars, travel insurance, and Expense in "
-               "foreign currencies."),
-    ("Utilities", "Expense for essential services such as electricity, water, gas, internet, cable television, phone bills, and other utilities required for daily living.")
+    ("Dining", "Dining, meals at restaurants, cafes, and fast food outlets. Excludes grocery and supermarkets."),
+    ("Supermarket", "Supermarkets, grocery stores, including food items, beverages, and household supplies."),
+    ("Healthcare", "Hospitals, clinics, pharmacy, and healthcare facilities; includes prescriptions and medical consultations."),
+    ("Pets", "Expenses for pet care, including food, medications, grooming, and veterinary services."),
+    ("Shopping", "Shopping, clothing, shopping, electronics, home goods, and personal care products at retail locations."),
+    ("Transport", "Local transportation expenses including public transit, taxis, and personal vehicle costs such as fuel and maintenance."),
+    ("Utilities", "Monthly utility bills including electricity, water, gas, internet services, and cable TV."),
+    ("Personal Care", "Personal grooming and beauty services at locations such as barbershops, beauty salons, and spas. Includes haircuts, styling, facials, and grooming.")
 )
 
 valid_labels = {name.lower(): name for name, _ in categories}
@@ -29,7 +26,49 @@ def load_data(file_path):
     return pd.read_csv(file_path, header=None, names=['Date', 'Description', 'Transaction Type', 'Amount'])
 
 
-def scrape(description):
+def refine_query(query):
+    role = ('Refine text into a Google search query. '
+            'Remove meaningless characters. '
+            'Do not provide any other output only the text to be searched on google.')
+    prompt = (f'Text: {query}')
+
+    response = ollama.chat(
+        model='llama3',
+        messages=[
+            {'role': 'system', 'content': role},
+            {'role': 'user', 'content': prompt}
+        ]
+    )
+
+    response_content = response['message']['content']
+    return response_content
+
+
+def refine_description(description, scraped):
+    role = ('Your role is to synthesize the description and the scraped text into a concise summary of the credit card expense. '
+            'Provide only the synthesized summary without any introductory phrases or additional comments. '
+            'This summary should directly address the contents provided, using no additional framing or filler text.')
+
+    scraped_joined = ", ".join(scraped)
+    prompt = (f'Description: {description} '
+              f'Scrape: {scraped_joined}. ')
+
+    response = ollama.chat(
+        model='llama3',
+        messages=[
+            {'role': 'system', 'content': role},
+            {'role': 'user', 'content': prompt}
+        ]
+    )
+
+    response_content = response['message']['content']
+    return response_content
+
+
+def scrape(description, refine=True):
+    if refine:
+        description = refine_query(description)  # use llama3 to refine query
+
     prep_description = description.replace(' ', '+')
     url = f'https://www.google.com/search?q={prep_description}'
     page = requests.get(url)
