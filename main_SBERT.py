@@ -5,7 +5,7 @@ from util import *
 model_name = 'all-MiniLM-L6-v2'
 model = SentenceTransformer(model_name)
 output_file = f'./static/output/labeled_expenses_{model_name}.csv'
-similarity_threshold = 0.1  # minimum acceptable similarity to assign a specific category
+similarity_threshold = 0.15  # minimum acceptable similarity to assign a specific category
 
 
 def categorize_description(description, scraped, refine=False):
@@ -53,11 +53,17 @@ def process_files(folder_path):
                     continue
 
                 description = row['Description'].lower()
-
+                cleaned_description = clean_description(description)
                 if description not in mapping:
-                    headings = scrape(description)
-                    headings = clean_headings(headings)[:10]
-                    label = categorize_description(description, headings)
+                    print(cleaned_description)
+                    headings = scrape(cleaned_description)
+                    print(len(headings))
+                    print(headings)
+
+                    headings = clean_headings(headings)[:5]
+                    print(headings)
+
+                    label = categorize_description(cleaned_description, headings)
 
                     # Update mapping to ensure we don't process repeated descriptions
                     mapping.add(description)

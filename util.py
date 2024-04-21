@@ -80,6 +80,22 @@ def scrape(description, refine=True):
     return heading_texts
 
 
+def clean_description(description):
+    # Convert to lowercase
+    cleaned_description = description.lower()
+
+    # Remove special characters
+    cleaned_description = re.sub(r'[^a-zA-Z0-9\s]', '', cleaned_description)
+
+    # Remove excess spaces
+    cleaned_description = re.sub(r'\s+', ' ', cleaned_description)
+
+    # Remove characters that are alone within the string
+    cleaned_description = re.sub(r'(?<=\s)\S(?=\s)', '', cleaned_description)
+
+    return cleaned_description.strip()
+
+
 def clean_headings(headings, n=2):
     cleaned_headings = set()
     common_suffixes = ['linkedin', 'instagram', 'twitter', 'facebook', 'youtube', 'apple', 'google play', 'app store', 'wikipedia']
