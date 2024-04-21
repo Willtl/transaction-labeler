@@ -45,23 +45,22 @@ def refine_query(query):
 
 
 def refine_description(description, scraped):
-    role = ('Your role is to synthesize the description and the scraped text into a concise summary of the credit card expense. '
-            'Provide only the synthesized summary without any introductory phrases or additional comments. '
-            'This summary should directly address the contents provided, using no additional framing or filler text.')
+    # role = ('Translate any token that is not english word to English. Summarize the description into 20 words. Do not explain what you are doing just provide the sentence (raw without any interaction)')
+    # scraped_joined = ", ".join(scraped)
+    # prompt = (f'Description: {description} '
+    #           f'Scrape: {scraped_joined}. ')
 
-    scraped_joined = ", ".join(scraped)
-    prompt = (f'Description: {description} '
-              f'Scrape: {scraped_joined}. ')
-
+    prompt = f'This is an expense that appeared in my credit card statement: {description}, what could it be? Write a sentence starting by: `This credit card expense description is probably from ...'
     response = ollama.chat(
         model='llama3',
         messages=[
-            {'role': 'system', 'content': role},
+            # {'role': 'system', 'content': role},
             {'role': 'user', 'content': prompt}
         ]
     )
 
     response_content = response['message']['content']
+
     return response_content
 
 

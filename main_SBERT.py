@@ -8,7 +8,7 @@ output_file = f'./static/output/labeled_expenses_{model_name}.csv'
 similarity_threshold = 0.15  # minimum acceptable similarity to assign a specific category
 
 
-def categorize_description(description, scraped, refine=False):
+def categorize_description(description, scraped, refine=True):
     if refine:
         description = refine_description(description, scraped)
     else:
@@ -55,14 +55,8 @@ def process_files(folder_path):
                 description = row['Description'].lower()
                 cleaned_description = clean_description(description)
                 if description not in mapping:
-                    print(cleaned_description)
                     headings = scrape(cleaned_description)
-                    print(len(headings))
-                    print(headings)
-
                     headings = clean_headings(headings)[:5]
-                    print(headings)
-
                     label = categorize_description(cleaned_description, headings)
 
                     # Update mapping to ensure we don't process repeated descriptions
